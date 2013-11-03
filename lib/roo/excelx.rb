@@ -249,7 +249,9 @@ class Roo::Excelx < Roo::Base
 
   # returns an array of sheet names in the spreadsheet
   def sheets
-    @workbook_doc.xpath("//xmlns:sheet").map do |sheet|
+    @workbook_doc.xpath("//xmlns:sheet").reject do |sheet|
+      sheet['state'] && sheet['state'] == 'hidden'
+    end.map do |sheet|
       sheet['name']
     end
   end
