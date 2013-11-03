@@ -249,8 +249,10 @@ class Roo::Excelx < Roo::Base
 
   # returns an array of sheet names in the spreadsheet
   def sheets
-    @workbook_doc.xpath("//xmlns:sheet").reject do |sheet|
-      sheet['state'] && sheet['state'] == 'hidden'
+    @sheet_names ||= @workbook_doc.xpath("//xmlns:sheet").reject.with_index do |sheet, sheet_index|
+      rejected = sheet['state'] && sheet['state'] == 'hidden'
+      @sheet_doc.delete_at(sheet_index) if rejected
+      rejected
     end.map do |sheet|
       sheet['name']
     end
